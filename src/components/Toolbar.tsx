@@ -1,16 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { useAnnotations } from "@/contexts/AnnotationContext";
 import { ActionType } from "@/types";
 import { Circle, TextCursorIcon as Cursor, Square } from "lucide-react";
 
-interface ToolbarProps {
-  selectedTool: ActionType;
-  onSelectTool: (tool: ActionType | null) => void;
-}
-
-export default function Toolbar({ selectedTool, onSelectTool }: ToolbarProps) {
+export default function Toolbar() {
+  const { selectedTool, setSelectedTool } = useAnnotations();
   const handleSelectTool = (tool: ActionType) => {
-    if (tool === selectedTool) onSelectTool(null);
-    else onSelectTool(tool);
+    if (tool === selectedTool) setSelectedTool(null);
+    else setSelectedTool(tool);
   };
 
   return (

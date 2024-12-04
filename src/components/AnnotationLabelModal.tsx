@@ -10,18 +10,20 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 
-interface LabelInputProps {
+interface Props {
+  annotationToEditLabel?: string;
   open: boolean;
   onSubmit: (label: string) => void;
   onCancel?: () => void;
 }
 
-export default function LabelInput({
+export default function AnnotationLabelModal({
+  annotationToEditLabel,
   open,
   onSubmit,
   onCancel,
-}: LabelInputProps) {
-  const [label, setLabel] = useState("");
+}: Props) {
+  const [label, setLabel] = useState(annotationToEditLabel || "");
 
   const handleSubmit = () => {
     if (label.trim() === "") {
@@ -29,11 +31,11 @@ export default function LabelInput({
       return;
     }
     onSubmit(label);
-    setLabel(""); // Resetta il campo dopo la submit
+    setLabel("");
   };
 
   const handleClose = () => {
-    setLabel(""); // Resetta il campo quando si chiude
+    setLabel("");
     onCancel?.();
   };
 

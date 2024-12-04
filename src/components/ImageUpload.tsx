@@ -25,7 +25,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   };
 
   return (
-    <div className="flex justify-center items-center p-4">
+    <div className="flex h-full justify-center items-center p-4">
       <label htmlFor="image-upload" className="cursor-pointer">
         <Button
           variant="outline"

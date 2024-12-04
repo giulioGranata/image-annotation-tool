@@ -1,22 +1,28 @@
+import { useAnnotations } from "@/contexts/AnnotationContext";
 import {
-  ActionType,
-  Annotation,
+  Annotation as AnnotationT,
   CircleAnnotation,
   RectangleAnnotation,
 } from "@/types";
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useState } from "react";
-import { Circle, Image, Layer, Rect, Stage, Text } from "react-konva";
+import { useState } from "react";
+import { Image, Layer, Stage } from "react-konva";
+import Annotation from "./Annotation";
+import AnnotationLabelModal from "./AnnotationLabelModal";
 import ImageUpload from "./ImageUpload";
-import LabelInput from "./LabelInput";
 
-type Props = {
-  selectedAction: ActionType;
-};
+export default function Canvas() {
+  const {
+    annotationKeyToEdit,
+    selectedTool,
+    annotations,
+    addAnnotation,
+    updateAnnotation,
+    deleteAnnotation,
+    setAnnotationKeyToEdit,
+  } = useAnnotations();
 
-export default function Canvas({ selectedAction }: Props) {
-  const [annotations, setAnnotations] = useState<Annotation[]>([]);
-  const [newAnnotation, setNewAnnotation] = useState<Annotation | null>(null);
+  const [newAnnotation, setNewAnnotation] = useState<AnnotationT | null>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [labelModal, setLabelModal] = useState<{
     visible: boolean;
@@ -26,7 +32,7 @@ export default function Canvas({ selectedAction }: Props) {
   const handleMouseDown = (event: KonvaEventObject<MouseEvent>) => {
     if (
       !newAnnotation &&
-      (selectedAction === "rectangle" || selectedAction === "circle")
+      (selectedTool === "rectangle" || selectedTool === "circle")
     ) {
       const position = event.target.getStage()?.getPointerPosition();
       if (!position) return;
@@ -35,11 +41,15 @@ export default function Canvas({ selectedAction }: Props) {
       setNewAnnotation({
         x,
         y,
-        key: "temp",
-        ...(selectedAction === "rectangle"
+        key: `annotation-${annotations.length + 1}`,
+        ...(selectedTool === "rectangle"
           ? { type: "rectangle", width: 0, height: 0 }
           : { type: "circle", radius: 0 }),
       });
+    }
+
+    if (selectedTool === "select" && annotationKeyToEdit) {
+      setAnnotationKeyToEdit(null);
     }
   };
 
@@ -71,9 +81,8 @@ export default function Canvas({ selectedAction }: Props) {
 
   const handleMouseUp = () => {
     if (newAnnotation) {
-      const newKey = `annotation-${annotations.length + 1}`;
-      setAnnotations((prev) => [...prev, { ...newAnnotation, key: newKey }]);
-      setLabelModal({ visible: true, annotationKey: newKey });
+      addAnnotation(newAnnotation);
+      setLabelModal({ visible: true, annotationKey: newAnnotation.key });
       setNewAnnotation(null);
     }
   };
@@ -82,13 +91,15 @@ export default function Canvas({ selectedAction }: Props) {
     if (!labelModal.annotationKey) return;
 
     // Troviamo l'annotazione con la chiave giusta e aggiungiamo la label
-    setAnnotations((prev) =>
-      prev.map((annotation) =>
-        annotation.key === labelModal.annotationKey
-          ? { ...annotation, label }
-          : annotation
-      )
+    const annotationToUpdate = annotations.find(
+      (annotation) => annotation.key === labelModal.annotationKey
     );
+    if (!annotationToUpdate) return;
+
+    updateAnnotation({
+      ...annotationToUpdate,
+      label,
+    });
 
     // Chiudiamo la modale e resettiamo lo stato
     setLabelModal({ visible: false, annotationKey: null });
@@ -96,11 +107,7 @@ export default function Canvas({ selectedAction }: Props) {
 
   const handleLabelCancel = () => {
     // Rimuoviamo l'annotazione senza label
-    setAnnotations((prev) =>
-      prev.filter(
-        (annotation) => annotation.key !== `annotation-${annotations.length}`
-      )
-    );
+    deleteAnnotation(`annotation-${annotations.length}`);
 
     // Chiudiamo la modale e resettiamo lo stato
     setLabelModal({ visible: false, annotationKey: null });
@@ -111,7 +118,7 @@ export default function Canvas({ selectedAction }: Props) {
     : annotations;
 
   return (
-    <div className="flex-1 flex flex-col items-center overflow-hidden h-full p-4">
+    <div className="flex-1 flex flex-col justify-center items-center overflow-hidden h-full p-4">
       {!image && <ImageUpload onImageUpload={setImage} />}
       {image && (
         <Stage
@@ -124,62 +131,14 @@ export default function Canvas({ selectedAction }: Props) {
         >
           <Layer>
             <Image image={image} width={image.width} height={image.height} />
-            {annotationsToDraw.map((value) => {
-              if (value.type === "rectangle") {
-                return (
-                  <React.Fragment key={value.key}>
-                    <Rect
-                      x={value.x}
-                      y={value.y}
-                      width={value.width}
-                      height={value.height}
-                      fill="transparent"
-                      stroke="black"
-                    />
-                    {value.label && (
-                      <Text
-                        x={value.x + value.width / 2}
-                        y={value.y + value.height / 2}
-                        text={value.label}
-                        fontSize={16}
-                        fill="black"
-                        offsetX={value.label.length * 4} // Adjust for centering text
-                        offsetY={8} // Adjust for centering text
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              } else if (value.type === "circle") {
-                return (
-                  <React.Fragment key={value.key}>
-                    <Circle
-                      x={value.x}
-                      y={value.y}
-                      radius={value.radius}
-                      fill="transparent"
-                      stroke="blue"
-                    />
-                    {value.label && (
-                      <Text
-                        x={value.x}
-                        y={value.y}
-                        text={value.label}
-                        fontSize={16}
-                        fill="blue"
-                        offsetX={value.label.length * 4} // Mantieni questo per centrare orizzontalmente
-                        offsetY={8} // Mantieni questo per centrare verticalmente
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              }
-              return null;
-            })}
+            {annotationsToDraw.map((value) => (
+              <Annotation key={value.key} annotation={value} />
+            ))}
           </Layer>
         </Stage>
       )}
       {labelModal.visible && (
-        <LabelInput
+        <AnnotationLabelModal
           open={labelModal.visible}
           onSubmit={handleLabelSave}
           onCancel={handleLabelCancel}
