@@ -10,6 +10,8 @@ interface AnnotationContextType {
   setSelectedTool: (tool: ActionType) => void;
   annotationKeyToEdit: string | null;
   setAnnotationKeyToEdit: (key: string | null) => void;
+  image: HTMLImageElement | null;
+  setImage: (image: HTMLImageElement | null) => void;
 }
 
 const AnnotationContext = createContext<AnnotationContextType | undefined>(
@@ -26,6 +28,7 @@ export function AnnotationProvider({
   const [annotationKeyToEdit, setAnnotationKeyToEdit] = useState<string | null>(
     null
   );
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   const addAnnotation = (annotation: Annotation) => {
     setAnnotations([...annotations, annotation]);
@@ -54,6 +57,8 @@ export function AnnotationProvider({
         setSelectedTool,
         annotationKeyToEdit,
         setAnnotationKeyToEdit,
+        image,
+        setImage,
       }}
     >
       {children}

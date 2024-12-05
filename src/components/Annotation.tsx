@@ -73,7 +73,6 @@ export default function Annotation({ annotation }: Props) {
     const node = shapeRef.current;
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
-    // Reset della scala
     node.scaleX(1);
     node.scaleY(1);
 
@@ -92,7 +91,7 @@ export default function Annotation({ annotation }: Props) {
         ...annotation,
         x: node.x(),
         y: node.y(),
-        radius: node.radius() * scaleX, // Ridimensionamento del cerchio
+        radius: node.radius() * scaleX,
       });
     }
   };
@@ -124,7 +123,6 @@ export default function Annotation({ annotation }: Props) {
       setAnnotationKeyToEdit(annotation.key);
   };
 
-  // Renderizza la forma in base al tipo
   const shape =
     type === "circle" ? (
       <KonvaCircle
@@ -133,7 +131,7 @@ export default function Annotation({ annotation }: Props) {
         y={y}
         radius={radius}
         fill="transparent"
-        stroke={isHighlighted ? "yellow" : "green"}
+        stroke={isHighlighted ? "limegreen" : "blue"}
         strokeWidth={isHighlighted ? 3 : 1}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -152,7 +150,7 @@ export default function Annotation({ annotation }: Props) {
         width={width}
         height={height}
         fill="transparent"
-        stroke={isHighlighted ? "yellow" : "blue"}
+        stroke={isHighlighted ? "limegreen" : "blue"}
         strokeWidth={isHighlighted ? 3 : 1}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -174,7 +172,7 @@ export default function Annotation({ annotation }: Props) {
           y={type === "circle" ? y - 8 : y + height! / 2} // Posiziona la label sopra il cerchio
           text={label}
           fontSize={16}
-          fill={isHighlighted ? "yellow" : "green"}
+          fill={isHighlighted ? "limegreen" : "blue"}
           offsetX={type === "circle" ? 0 : label.length * 4}
           offsetY={type === "circle" ? 0 : 8}
         />

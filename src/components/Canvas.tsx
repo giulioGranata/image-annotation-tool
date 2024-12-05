@@ -16,14 +16,15 @@ export default function Canvas() {
     annotationKeyToEdit,
     selectedTool,
     annotations,
+    image,
     addAnnotation,
     updateAnnotation,
     deleteAnnotation,
     setAnnotationKeyToEdit,
+    setImage,
   } = useAnnotations();
 
   const [newAnnotation, setNewAnnotation] = useState<AnnotationT | null>(null);
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [labelModal, setLabelModal] = useState<{
     visible: boolean;
     annotationKey: string | null;
