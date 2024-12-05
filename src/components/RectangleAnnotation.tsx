@@ -2,6 +2,9 @@ import { useAnnotations } from "@/contexts/AnnotationContext";
 import { RectangleAnnotation as RectangleAnnotationT } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { Rect as KonvaRect, Text, Transformer } from "react-konva";
+import { Html } from "react-konva-utils";
+import AnnotationLabelModal from "./AnnotationLabelModal";
+import { Button } from "./ui/button";
 
 type Props = {
   annotation: RectangleAnnotationT;
@@ -19,9 +22,12 @@ export default function RectangleAnnotation({
   onClick,
 }: Props) {
   const { annotationKeyToEdit, updateAnnotation } = useAnnotations();
+  // State to show the edit label modal
+  const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
   // State to hide the label while moving or resizing the shape
   const [isMovingOrResizing, setIsMovingOrResizing] = useState(false);
 
+  // Konva refs to handle transformer
   const shapeRef = useRef<any>();
   const trRef = useRef<any>();
 
@@ -64,6 +70,18 @@ export default function RectangleAnnotation({
     });
   };
 
+  const handleLabelSubmit = (newLabel: string) => {
+    updateAnnotation({
+      ...annotation,
+      label: newLabel,
+    });
+    setIsLabelModalOpen(false);
+  };
+
+  const handleLabelCancel = () => {
+    setIsLabelModalOpen(false);
+  };
+
   return (
     <>
       <KonvaRect
@@ -96,18 +114,46 @@ export default function RectangleAnnotation({
         />
       )}
       {isEditing && (
-        <Transformer
-          ref={trRef}
-          flipEnabled={false}
-          rotateEnabled={false}
-          boundBoxFunc={(oldBox, newBox) => {
-            // Prevent resizing too small
-            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
+        <>
+          <Transformer
+            ref={trRef}
+            flipEnabled={false}
+            rotateEnabled={false}
+            boundBoxFunc={(oldBox, newBox) => {
+              // Prevent resizing too small
+              if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+                return oldBox;
+              }
+              return newBox;
+            }}
+          />
+          {/* Pulsante per modificare la label */}
+          {!isMovingOrResizing && (
+            // Using Html to use the button in the Konva canvas,
+            // otherwise you can't use external components like Button
+            // or Modal inside the Konva Stage
+            <Html>
+              <Button
+                style={{
+                  position: "absolute",
+                  left: `${x + width / 2}px`,
+                  top: `${y - 30}px`, // Posiziona il pulsante sopra la forma
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 10,
+                }}
+                onClick={() => setIsLabelModalOpen(true)}
+              >
+                Edit Label
+              </Button>
+              {/* Modale per modificare l'etichetta */}
+              <AnnotationLabelModal
+                open={isLabelModalOpen}
+                onSubmit={handleLabelSubmit}
+                onCancel={handleLabelCancel}
+              />
+            </Html>
+          )}
+        </>
       )}
     </>
   );

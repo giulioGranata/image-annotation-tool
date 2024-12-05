@@ -1,3 +1,4 @@
+import { useAnnotations } from "@/contexts/AnnotationContext";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import {
@@ -11,19 +12,21 @@ import {
 import { Input } from "./ui/input";
 
 interface Props {
-  annotationToEditLabel?: string;
   open: boolean;
   onSubmit: (label: string) => void;
   onCancel?: () => void;
 }
 
 export default function AnnotationLabelModal({
-  annotationToEditLabel,
   open,
   onSubmit,
   onCancel,
 }: Props) {
-  const [label, setLabel] = useState(annotationToEditLabel || "");
+  const { annotations, annotationKeyToEdit } = useAnnotations();
+  const [label, setLabel] = useState(
+    annotations.find((annotation) => annotation.key === annotationKeyToEdit)
+      ?.label || ""
+  );
 
   const handleSubmit = () => {
     if (label.trim() === "") {
