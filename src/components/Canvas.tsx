@@ -48,7 +48,9 @@ export default function Canvas() {
       });
     }
 
-    if (selectedTool === "select" && annotationKeyToEdit) {
+    // Exit from edit mode
+    const clickedOnImage = event.target?.getClassName() === "Image";
+    if (clickedOnImage && annotationKeyToEdit && selectedTool === "select") {
       setAnnotationKeyToEdit(null);
     }
   };
