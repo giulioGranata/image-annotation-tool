@@ -17,8 +17,11 @@ export default function Toolbar() {
   };
 
   return (
-    <div className="p-4 border-b flex justify-center sm:justify-start">
-      <div className="flex flex-col space-y-2">
+    <div className="p-4 border-b flex justify-center sm:justify-start bg-slate-200 rounded-md border border-slate-400">
+      <div className="flex flex-col space-y-3">
+        <p className="text-center text-slate-600 text-sm font-medium leading-none my-3">
+          Tools
+        </p>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
