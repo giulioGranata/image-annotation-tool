@@ -1,6 +1,6 @@
 import { useAnnotations } from "@/contexts/AnnotationContext";
 import { RectangleAnnotation as RectangleAnnotationT } from "@/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Rect as KonvaRect, Text, Transformer } from "react-konva";
 
 type Props = {
@@ -18,8 +18,9 @@ export default function RectangleAnnotation({
   onMouseLeave,
   onClick,
 }: Props) {
-  const { annotationKeyToEdit, updateAnnotation, setAnnotationKeyToEdit } =
-    useAnnotations();
+  const { annotationKeyToEdit, updateAnnotation } = useAnnotations();
+  // State to hide the label while moving or resizing the shape
+  const [isMovingOrResizing, setIsMovingOrResizing] = useState(false);
 
   const shapeRef = useRef<any>();
   const trRef = useRef<any>();
@@ -30,17 +31,18 @@ export default function RectangleAnnotation({
 
   useEffect(() => {
     if (isEditing) {
-      // we need to attach transformer manually
+      // Attach transformer manually to the shape
       trRef.current.nodes([shapeRef.current]);
       trRef.current.getLayer().batchDraw();
     }
   }, [isEditing]);
 
   const handleTransformEnd = () => {
+    setIsMovingOrResizing(false);
     const node = shapeRef.current;
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
-    // we will reset it back
+    // Reset to default scale
     node.scaleX(1);
     node.scaleY(1);
     updateAnnotation({
@@ -53,6 +55,7 @@ export default function RectangleAnnotation({
   };
 
   const handleDragEnd = () => {
+    setIsMovingOrResizing(false);
     const node = shapeRef.current;
     updateAnnotation({
       ...annotation,
@@ -76,19 +79,15 @@ export default function RectangleAnnotation({
         onMouseLeave={onMouseLeave}
         onClick={onClick}
         draggable={isEditing}
+        onDragStart={() => setIsMovingOrResizing(true)}
         onDragEnd={handleDragEnd}
+        onTransformStart={() => setIsMovingOrResizing(true)}
         onTransformEnd={handleTransformEnd}
       />
-      {label && (
+      {label && !isMovingOrResizing && (
         <Text
-          x={
-            shapeRef.current ? shapeRef.current.x() + width / 2 : x + width / 2
-          }
-          y={
-            shapeRef.current
-              ? shapeRef.current.y() + height / 2
-              : y + height / 2
-          }
+          x={x + width / 2}
+          y={y + height / 2}
           text={label}
           fontSize={16}
           fill={isHighlighted ? "yellow" : "blue"}
@@ -102,7 +101,7 @@ export default function RectangleAnnotation({
           flipEnabled={false}
           rotateEnabled={false}
           boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
+            // Prevent resizing too small
             if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
               return oldBox;
             }
