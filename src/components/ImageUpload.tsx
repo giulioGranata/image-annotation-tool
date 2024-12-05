@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ImageIcon } from "lucide-react";
 import React, { ChangeEvent } from "react";
 import { Input } from "./ui/input";
 
@@ -27,12 +28,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   return (
     <div className="flex h-full justify-center items-center p-4">
       <label htmlFor="image-upload" className="cursor-pointer">
-        <Button
-          variant="outline"
-          className="mr-2"
-          onClick={() => inputRef.current?.click()}
-        >
-          Carica un'immagine
+        <Button variant="outline" onClick={() => inputRef.current?.click()}>
+          <ImageIcon className="h-4 w-4" />
+          Upload image
         </Button>
         <Input
           ref={inputRef}
