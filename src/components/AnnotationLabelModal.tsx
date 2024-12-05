@@ -1,5 +1,5 @@
 import { useAnnotations } from "@/contexts/AnnotationContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -23,10 +23,14 @@ export default function AnnotationLabelModal({
   onCancel,
 }: Props) {
   const { annotations, annotationKeyToEdit } = useAnnotations();
-  const [label, setLabel] = useState(
-    annotations.find((annotation) => annotation.key === annotationKeyToEdit)
-      ?.label || ""
-  );
+  const [label, setLabel] = useState("");
+
+  useEffect(() => {
+    setLabel(
+      annotations.find((annotation) => annotation.key === annotationKeyToEdit)
+        ?.label || ""
+    );
+  }, [annotations, annotationKeyToEdit, open]);
 
   const handleSubmit = () => {
     if (label.trim() === "") {
