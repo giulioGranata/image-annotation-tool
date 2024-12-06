@@ -121,8 +121,8 @@ export default function Canvas() {
     : annotations;
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center overflow-hidden h-full p-4 bg-slate-100">
-      {!image && <ImageUpload onImageUpload={setImage} />}
+    <div className="flex-1 flex flex-col justify-center items-center overflow-hidden h-full p-4">
+      {!image && <ImageUpload />}
       {image && (
         <Stage
           onMouseDown={handleMouseDown}

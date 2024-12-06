@@ -1,51 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { ImageIcon } from "lucide-react";
-import React, { ChangeEvent } from "react";
-import { Input } from "./ui/input";
+import { useAnnotations } from "@/contexts/AnnotationContext";
+import { FileUpload } from "./ui/file-upload";
 
-interface ImageUploadProps {
-  onImageUpload: (image: HTMLImageElement) => void;
-}
+export function ImageUpload() {
+  const { setImage } = useAnnotations();
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+  const handleFileUpload = (files: File[]) => {
+    if (files.length > 0) {
+      const file = files[0];
       const reader = new FileReader();
-      reader.onload = (e) => {
+
+      reader.onload = () => {
         const img = new Image();
+        img.src = reader.result as string;
+
         img.onload = () => {
-          onImageUpload(img);
+          setImage(img);
         };
-        img.src = e.target?.result as string;
       };
+
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="flex flex-col gap-3 h-full justify-center items-center p-4">
-      <p className="text-center text-slate-400 text-lg font-semibold leading-none my-3">
-        Add an image to start
-      </p>
-      <label htmlFor="image-upload" className="cursor-pointer">
-        <Button variant="outline" onClick={() => inputRef.current?.click()}>
-          <ImageIcon className="h-4 w-4" />
-          Upload image
-        </Button>
-        <Input
-          ref={inputRef}
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </label>
+    <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+      <FileUpload onChange={handleFileUpload} />
     </div>
   );
-};
+}
 
 export default ImageUpload;
