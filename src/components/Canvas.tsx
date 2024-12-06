@@ -130,7 +130,9 @@ export default function Canvas() {
           onMouseUp={handleMouseUp}
           width={image.width}
           height={image.height}
-          style={{ border: "1px solid slate-400" }}
+          style={{
+            border: "1px solid border-neutral-200 dark:border-neutral-800",
+          }}
         >
           <Layer>
             <Image image={image} width={image.width} height={image.height} />
