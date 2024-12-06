@@ -131,8 +131,8 @@ export default function Annotation({ annotation }: Props) {
         y={y}
         radius={radius}
         fill="transparent"
-        stroke={isHighlighted ? "limegreen" : "blue"}
-        strokeWidth={isHighlighted ? 3 : 1}
+        stroke={isHighlighted ? "limegreen" : "orange"}
+        strokeWidth={isHighlighted ? 5 : 3}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onClick={handleAnnotationClick}
@@ -150,8 +150,8 @@ export default function Annotation({ annotation }: Props) {
         width={width}
         height={height}
         fill="transparent"
-        stroke={isHighlighted ? "limegreen" : "blue"}
-        strokeWidth={isHighlighted ? 3 : 1}
+        stroke={isHighlighted ? "limegreen" : "orange"}
+        strokeWidth={isHighlighted ? 5 : 3}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onClick={handleAnnotationClick}
@@ -172,7 +172,7 @@ export default function Annotation({ annotation }: Props) {
           y={type === "circle" ? y - 8 : y + height! / 2} // Posiziona la label sopra il cerchio
           text={label}
           fontSize={16}
-          fill={isHighlighted ? "limegreen" : "blue"}
+          fill={isHighlighted ? "limegreen" : "orange"}
           offsetX={type === "circle" ? 0 : label.length * 4}
           offsetY={type === "circle" ? 0 : 8}
         />
