@@ -26,7 +26,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   };
 
   return (
-    <div className="flex h-full justify-center items-center p-4">
+    <div className="flex flex-col gap-3 h-full justify-center items-center p-4">
+      <p className="text-center text-slate-400 text-lg font-semibold leading-none my-3">
+        Add an image to start
+      </p>
       <label htmlFor="image-upload" className="cursor-pointer">
         <Button variant="outline" onClick={() => inputRef.current?.click()}>
           <ImageIcon className="h-4 w-4" />
