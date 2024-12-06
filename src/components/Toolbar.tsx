@@ -24,7 +24,10 @@ export default function Toolbar() {
         </p>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
+            <TooltipTrigger
+              className={!image ? "cursor-not-allowed" : ""}
+              asChild
+            >
               <Button
                 variant={selectedTool === "rectangle" ? "default" : "outline"}
                 onClick={() => handleSelectTool("rectangle")}
@@ -45,7 +48,10 @@ export default function Toolbar() {
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
+            <TooltipTrigger
+              className={!image ? "cursor-not-allowed" : ""}
+              asChild
+            >
               <Button
                 variant={selectedTool === "circle" ? "default" : "outline"}
                 onClick={() => handleSelectTool("circle")}
@@ -66,7 +72,10 @@ export default function Toolbar() {
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
+            <TooltipTrigger
+              className={!image ? "cursor-not-allowed" : ""}
+              asChild
+            >
               <Button
                 variant={selectedTool === "select" ? "default" : "outline"}
                 onClick={() => handleSelectTool("select")}
