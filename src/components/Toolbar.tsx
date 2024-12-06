@@ -24,12 +24,12 @@ export default function Toolbar() {
         </p>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
+            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
               <Button
                 variant={selectedTool === "rectangle" ? "default" : "outline"}
                 onClick={() => handleSelectTool("rectangle")}
-                className="w-full sm:w-auto"
                 disabled={!image}
+                className={!image ? "cursor-not-allowed" : ""}
               >
                 <Square className="w-4 h-4" />
               </Button>
@@ -38,17 +38,19 @@ export default function Toolbar() {
               side="left"
               className="px-3 py-2 bg-white rounded-md shadow-lg border border-slate-700"
             >
-              <p>Add a rectangular annotation</p>
+              <p>
+                {!image ? "Add an image first" : "Add a rectangular annotation"}
+              </p>
             </TooltipContent>
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger asChild>
+            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
               <Button
                 variant={selectedTool === "circle" ? "default" : "outline"}
                 onClick={() => handleSelectTool("circle")}
-                className="w-full sm:w-auto"
                 disabled={!image}
+                className={!image ? "cursor-not-allowed" : ""}
               >
                 <Circle className="w-4 h-4" />
               </Button>
@@ -57,17 +59,19 @@ export default function Toolbar() {
               side="left"
               className="px-3 py-2 bg-white rounded-md shadow-lg border border-slate-700"
             >
-              <p>Add a circular annotation</p>
+              <p>
+                {!image ? "Add an image first" : "Add a circular annotation"}
+              </p>
             </TooltipContent>
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger asChild>
+            <TooltipTrigger className={!image ? "cursor-not-allowed" : ""}>
               <Button
                 variant={selectedTool === "select" ? "default" : "outline"}
                 onClick={() => handleSelectTool("select")}
-                className="w-full sm:w-auto"
                 disabled={!image}
+                className={!image ? "cursor-not-allowed" : ""}
               >
                 <MousePointer className="w-4 h-4" />
               </Button>
@@ -76,7 +80,7 @@ export default function Toolbar() {
               side="left"
               className="px-3 py-2 bg-white rounded-md shadow-lg border border-slate-700"
             >
-              <p>Select an annotation</p>
+              <p>{!image ? "Add an image first" : "Select an annotation"}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
